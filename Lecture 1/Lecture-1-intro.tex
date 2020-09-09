@@ -744,10 +744,10 @@ SELECT skill, avg(wage), exp FROM wages GROUP BY skill, exp
 \begin{frame}
 \frametitle{Современность и альтернативы: компиляция запросов I}
 
-	То, что рассматривалось выше (Volcano) называется \alert{интерпретацией} запросов. А бывает еще и \alert{компиляция} запросов в код и она очень популярна сейчас, фактически баззворд.
+	То, что рассматривалось выше (Volcano) называется \alert{интерпретацией} запросов. А бывает еще и \alert{компиляция} запросов в код\footnote{\scriptsize Замечание по терминологии. В версии энциклопедии баз данных 2009 года статья Query Compliation ведет на Query Optimization, а в 2018 ссылку убрали.} и она очень популярна сейчас, фактически баззворд.
 	
 	\begin{itemize}
-		\setlength\itemsep{1em}
+		%\setlength\itemsep{1em}
 		\item Пытались так делать с 80х, но дело не пошло: долго компилируется, да и сейчас заметные затраты;
 		\item Сейчас (2010+) компиляция есть очень во многих индустриальных системах, в 10х был бум исследований;
 		\item Кажется что для дисковых систем подход не особо важен;
@@ -758,7 +758,7 @@ SELECT skill, avg(wage), exp FROM wages GROUP BY skill, exp
 		\end{itemize}	
 	\end{itemize}
 	
-	Итог: кажется что овчинка стоит выделки только при проверке предикатов. Но и тут у подхода есть конкуренты (e.g. стековые машины).
+	Итог: кажется что овчинка стоит выделки только при проверке предикатов. Но тут у компиляции есть конкуренты (e.g. стековые машины).
 \end{frame}
 
 \begin{frame}[fragile]
@@ -772,14 +772,12 @@ SELECT skill, avg(wage), exp FROM wages GROUP BY skill, exp
 		\end{column}
 		\begin{column}{0.48\textwidth}
 			\begin{figure}[htb]
-			\includegraphics[width=\textwidth,height=0.40\textheight,keepaspectratio]{compilation-3.png} 
+			\includegraphics[width=\textwidth,height=0.40\textheight,keepaspectratio]{compilation-3.png}
 			\end{figure}
 		\end{column}
 	\end{columns}
+\footnote{\tiny{Все изображения на этом слайде взяты из \cite{Neumann2011}}} 
 
-	\begin{figure}[htb]
-		\includegraphics[width=\textwidth,height=0.30\textheight,keepaspectratio]{compilation-1.png}\footnote{\tiny{Все изображение на этом слайде взяты из \cite{Neumann2011}}}
-	\end{figure}
 	
 \end{frame}
 
@@ -788,10 +786,20 @@ SELECT skill, avg(wage), exp FROM wages GROUP BY skill, exp
 	Как генерировать код? Авторы попробовали генерировать C++ код но это оказалось долго и неудобно: сложный запрос компилировался несколько секунд. 
 	\\~\\
 	Пришли к связке \underline{прекомпилированных C++ кусочков} (реализация сложных компонентов) и \underline{генерация в LLVM ассемблер}, который JIT компилировался и вызывал C++ кусочки.
-	\begin{figure}[htb]
-		\includegraphics[width=\textwidth,height=0.40\textheight,keepaspectratio]{compilation-4.png}\footnote{\tiny{Все изображение на этом слайде взяты из \cite{Neumann2011}}}
-	\end{figure}
-	
+
+	\begin{columns}
+		\begin{column}{0.68\textwidth}	
+			\begin{figure}[htb]
+			\includegraphics[width=\textwidth,height=0.40\textheight,keepaspectratio]{compilation-4.png}
+			\end{figure}
+		\end{column}
+		\begin{column}{0.28\textwidth}
+			\begin{figure}[htb]
+			\includegraphics[width=\textwidth,height=0.30\textheight,keepaspectratio]{compilation-1.png}
+			\end{figure}			
+		\end{column}
+	\end{columns}
+	\footnote{\tiny{Все изображения на этом слайде взяты из \cite{Neumann2011}}}
 \end{frame}
 
 \begin{frame}[fragile]
