@@ -613,8 +613,8 @@ Meister A., Saake G. (2017) Cost-Function Complexity Matters: When Does Parallel
   \item Агрегацию можно бездумно проталкивать вниз, под соединения, если выше находятся соединения 1 к 1 (в некоторых случаях можно делать пре-аггрегацию, не смотря на тип соединения);
   \item Бывают вложенные запросы:\\ SELECT ... WHERE X IN (SELECT ...);
   \begin{itemize}
-    \item Можно бить на блоки и обрабатывать их отдельно, но часто невыгодно;
-    \item Вместо этого: стараться пропихнуть внешние предикаты внутрь или попытаться уплощить запрос.
+    \item Бить на блоки и обрабатывать их отдельно, но редко когда выгодно (временные таблицы);
+    \item Вместо этого: стараться пропихнуть внешние предикаты внутрь или попытаться уплощить запрос. Зависит от запроса, редко когда можно сделать.
   \end{itemize}
 \end{itemize}
 
@@ -653,7 +653,7 @@ Meister A., Saake G. (2017) Cost-Function Complexity Matters: When Does Parallel
 	СУБД & год  & тип  & Оптимизатор \\
 	\hline
 	
-	PostgreSQL & 1996 & D & Стоимостной оптимизатор, переупорядочивает соединения, использует генетический алгоритм для обхода\footnote{\url{https://postgrespro.com/docs/postgresql/11/geqo-intro2.html}}\\
+	PostgreSQL & 1996 & D & Стоимостной оптимизатор, переупорядочивает соединения, использует генетический алгоритм (GEQO) для обхода\footnote{\url{https://postgrespro.com/docs/postgresql/11/geqo-intro2.html}}. До 12 соединений использует обход подобный 19 слайду, потом GEQO.\\
 	
 	MariaDB & 1995 & D & До 2012 года не использовала статистику вообще\footnote{\url{https://mariadb.com/kb/en/differences-between-the-mysql-and-mariadb-query-optimizer/}}, работали на эвристиках. Сейчас умеют переупорядочивать соединения\footnote{\url{https://www.oreilly.com/library/view/high-performance-mysql/9780596101718/ch04.html}}, еще список\footnote{\url{https://mariadb.com/kb/en/query-optimizations/}} чего умеют.\\
 	
