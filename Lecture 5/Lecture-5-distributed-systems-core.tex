@@ -409,11 +409,12 @@ $\longrightarrow$ оптимизация сложнее нежели в цент
 \begin{itemize}
   \setlength\itemsep{1em}
 
-  \item Мультимедиа РСУБД, пусть надо выполнить TOP(N) и известно что функция оценки~--- монотонная функция\\~\\например, найти TOP 10 от\\~\\ f (voice, score) = score(voice) + score(looks) ORDERBY ASCENDING\\~\\
+  \item Мультимедиа РСУБД, пусть надо выполнить TOP N и известно что функция оценки~--- монотонная функция\\~\\например, найти TOP N от\\~\\ f (voice, score) = score(voice) + score(looks) ORDERBY ASCENDING\\~\\
   тогда работает такой алгоритм:
   \begin{itemize}
-    \item Последовательно просим top от voice и looks, пока пересечение не будет иметь 10 объектов;
-    \item Вычисляем ранжирующую функцию $f$ для тех птиц, что не входят в пересечение и выдаем результат.
+    \item Последовательно просим top от voice и looks, пока пересечение не будет иметь N птиц;
+    \item Вычисляем ранжирующую функцию $f$ для птиц из пересечения;
+    \item Дозапрашиваем недостающие значения и вычисляем ранжирующую функцию $f$ для тех птиц, что не входят в пересечение и выдаем результат.
   \end{itemize}
   
 \end{itemize}
@@ -432,14 +433,17 @@ s_2(a)) < f(s_1(b), s_2(b))$.
 \begin{center}
 	\begin{tabular}{ | c | c | }
 		\hline
-		looks & score  \\ \hline
+		looks & voice  \\ \hline
 		\alert{\textbf{a 1}} & \alert{e 2} \\ \hline
 		\alert{\textbf{b 2}} & \alert{f 3} \\ \hline
 		\alert{c 3} & \alert{\textbf{a 8}} \\ \hline
-		\alert{d 3} & \alert{\textbf{b 9}} \\ \hline
-		e 3.5       & c 10 \\ \hline        
-		f 3.8       & d 11 \\ \hline
+		\alert{d 3} & \alert{\textbf{b 9}} \\ \hline \hline
 		... & ... \\ \hline
+		e 3.5       & ... \\ \hline
+		... & c 10 \\ \hline
+		... & d 11 \\ \hline
+		... & ... \\ \hline		
+		f 3.8 & ... \\ \hline
 	\end{tabular}
 \end{center}
 	\columnbreak
@@ -447,10 +451,12 @@ a = 1 + 8 = 9\\
 b = 2 + 9 = 11\\
 c = 3 + 10 = 13\\
 d = 3 + 11 = 14\\
-\alert{e = 3.5 + 2 = 5.5}\\
-\alert{f = 3.8 + 3 = 6.8}
+\underline{e = 3.5 + 2 = 5.5}\\
+\underline{f = 3.8 + 3 = 6.8}
 	
 \end{multicols}
+
+Набрали пересечение, потом считали отдельно значения которых у нас нет (looks для e,f и voice для c, d). Работает если дозапрашивать можно и это дешево.
 
 
 \end{frame}
