@@ -1,0 +1,20 @@
+
+	\definecolor{reader}{HTML}{ffeda0}%
+	\begin{tikzpicture}[
+	block/.style={
+		rectangle,
+		draw=black,
+		thick,
+		align=center,
+	},
+	-{Stealth[length=2mm, width=1.5mm]}]
+	\draw (0em,0em) node[block, fill=reader, minimum height=5em, text width=9em](N){};
+	\path (0,-0.25) node[] (N1) {\Large Storage System}
+	(0,-1.225) node[block,fill=blue!20, text width=9em] (N2) {Disk}
+	(0,0.68) node[block, fill=Dandelion!90,] (N4) {Access methods}
+	(3.5,0.7) node[block] (N5) {AccessRange\\ AccessSorted\\ AccessJive}
+	(0,2) node[block, fill=Dandelion!90,] (N6) {RangeReader SortedReader JiveReader}
+	;
+	\draw[densely dashed] (N4) -- (N5);
+	\draw[{Stealth[length=2mm, width=1.5mm]}-{Stealth[length=2mm, width=1.5mm]}] (N4) -- (N6) node [midway, left] {Blocks of data};  
+	\end{tikzpicture}

@@ -1,0 +1,44 @@
+\begin{tikzpicture}[
+ 	column/.style={
+ 		rectangle,
+ 		draw=Purple,
+ 		thick,
+ 		fill=Dandelion!90,
+ 		text width=6.7em,
+ 		align=center,
+ 		%		minimum height=0.6em,
+ 	},
+ 	block/.style={
+ 		rectangle,
+ 		draw=blue,
+ 		thick,
+ 		fill=blue!20,
+ 		text width=7.5em,
+ 		align=center,
+ 		rounded corners,
+ 		minimum height=3.5em
+ 	},
+ block2/.style={
+ 	rectangle,
+ 	draw=blue,
+ 	thick,
+ 	fill=blue!20,
+ 	text width=7em,
+ 	align=center,
+ 	rounded corners,
+ 	minimum height=1.5em
+ },
+-{Stealth[length=2mm, width=1.5mm]}]
+ 	\draw (0,-0.2) node[column](N1){Data reading};
+ 	\path (-3,-1) node[column] (N2) {Remote}
+ 	(3,-1) node[column] (N3) {Local}
+ 	(-3,-1.9) node[block2] (N4) {NetworkReader}
+ 	(-3,-3.3) node[block2] (N5) {RemoteReader}
+ 	(3,-1.9) node[block2] (N6) {XXXReader}
+ 	(3,-3.3) node[block2] (N7) {Disk}
+ 	;
+ 	\draw (N1) -- (N2.east);
+  	\draw (N1) -- (N3.west);
+  	\draw[{Stealth[length=2mm, width=1.5mm]}-{Stealth[length=2mm, width=1.5mm]}] (N4.south east) -- (N5.north east) node [midway, left] {Network}; 
+  	\draw[{Stealth[length=2mm, width=1.5mm]}-{Stealth[length=2mm, width=1.5mm]}] (N6.south west) -- (N7.north west) node [midway, right] {Storage subsystem}; 
+ 	\end{tikzpicture}

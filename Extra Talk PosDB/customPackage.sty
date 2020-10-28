@@ -1,0 +1,366 @@
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{customPackage}[2013/01/13 Custom Package]
+
+\newif\if@language
+\newif\if@blocks
+\newif\if@hyperref
+\newif\if@biblio
+\newif\if@listing
+\newif\if@tables
+
+\DeclareOption{language}{\@languagetrue}
+\DeclareOption{blocks}{\@blockstrue}
+\DeclareOption{hyperref}{\@hyperreftrue}
+\DeclareOption{biblio}{\@bibliotrue}
+\DeclareOption{lstlisting}{\@listingtrue}
+\DeclareOption{tables}{\@tablestrue}
+
+\ProcessOptions\relax
+
+% % % % % % % % % % % % % % % % % % % % % % % %
+% Поддержка нужных языков
+% % % % % % % % % % % % % % % % % % % % % % % %
+\if@language
+	\RequirePackage{iftex}
+	\expandafter\@firstofone
+\else
+	\expandafter\@gobble
+\fi
+   {  
+\ifXeTeX
+	\RequirePackage{fontspec}
+	\setmainfont[Ligatures=TeX]{CMU Serif}
+	\setsansfont[Ligatures=TeX]{CMU Sans Serif}
+	\setmonofont[Ligatures=TeX]{CMU Typewriter Text}
+	\RequirePackage{polyglossia}
+	\setdefaultlanguage{russian}
+	\setotherlanguages{english}
+	\RequirePackage[autostyle, english=american]{csquotes}
+\else
+	\RequirePackage[noTeX]{mmap}
+	\RequirePackage[utf8]{inputenc}
+	\RequirePackage[T2A]{fontenc}
+	\RequirePackage[english,main=russian]{babel}
+	\RequirePackage[autostyle, english=american]{csquotes}
+\fi
+}
+
+% % % % % % % % % % % % % % % % % % % % % % % %
+% Загружаем xcolor правильным образом
+% % % % % % % % % % % % % % % % % % % % % % % %
+\@ifclassloaded{beamer}
+{}
+{\RequirePackage[dvipsnames,table]{xcolor}}
+
+% % % % % % % % % % % % % % % % % % % % % % % %
+% Загружаем tikz и определяем стили и конструкци
+% % % % % % % % % % % % % % % % % % % % % % % %
+
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta, calc,patterns}
+
+\tikzstyle{->} = [-{Stealth[length=#1mm]}]
+\tikzstyle{<-} = [{Stealth[length=#1mm]}-]
+\tikzstyle{<->} = [{Stealth[length=#1mm]}-{Stealth[length=#1mm]}]
+\tikzstyle{Block} = [rectangle, draw=black, very thin, align=center, fill=#1]
+\tikzstyle{RBlock} = [Block=#1, rounded corners]
+\tikzstyle{Node} = [circle, draw=black,  very thin, align=center, fill=#1]
+
+\tikzset{%
+	->/.default=2,
+	<-/.default=2,
+	<->/.default=2%
+}
+
+\pgfkeys{
+	/mycolumn/.is family, /mycolumn,
+	width/.estore in = \@mycolumnWidth,
+	height/.estore in = \@mycolumnHeight,
+	space/.estore in = \@mycolumnSpace,
+	name/.estore in = \@mycolumnName
+}
+
+\tikzset{
+	/mycolumn/box/.style={},
+	/mycolumn/text/.style={},
+	/mycolumn/space=0,
+	/mycolumn/name=columnNode,
+}
+
+\newcommand{\datacolumn}[4][]{%%%
+	\begingroup
+	\begin{scope}
+	\pgfkeys{/mycolumn, #1}
+	\edef\x{#2}
+	\edef\y{#3 - \noexpand\@j * \@mycolumnHeight - \noexpand\@j * \@mycolumnSpace}
+	\foreach \t [count=\@j from 0] in {#4} {
+		\node (rect) at (\x, \y) [/mycolumn/box, minimum width = \@mycolumnWidth cm, minimum height = \@mycolumnHeight cm] (\@mycolumnName \@j) {};
+		\node[/mycolumn/text] at (\x, \y) {\t};
+	}
+	\end{scope}
+	\endgroup
+}
+
+\newcommand{\emptycolumn}[4][]{%%%
+	\begingroup
+	\begin{scope}
+		\pgfkeys{/mycolumn, #1}
+		\edef\x{#2}
+		\edef\y{#3 - \noexpand\the\noexpand\@j * \@mycolumnHeight - \noexpand\the\noexpand\@j * \@mycolumnSpace}
+		\edef\num{#4}
+		\newcount\@j
+		\@j 0\relax
+		\loop
+			\node (rect) at (\x,\y) [/mycolumn/box, minimum width = \@mycolumnWidth cm, minimum height = \@mycolumnHeight cm] (\@mycolumnName \thej) {};
+		\advance \@j by1
+		\ifnum\@j<\num \repeat
+	\end{scope}
+	\endgroup
+}
+
+\pgfkeys{
+	/myrow/.is family, /myrow,
+	width/.estore in = \@myrowWidth,
+	height/.estore in = \@myrowHeight,
+	space/.estore in = \@myrowSpace,
+	name/.estore in = \@myrowName,
+}
+
+\tikzset{
+	/myrow/box/.style={},
+	/myrow/text/.style={},
+	/myrow/space=0,
+	/myrow/name=rowNode,
+}
+
+\newcommand{\datarow}[4][]{%%%
+	\begingroup
+	\begin{scope}
+	\pgfkeys{/myrow, #1}
+	\edef\x{#2 + \noexpand\@j * \@myrowWidth + \noexpand\@j * \@myrowSpace}
+	\edef\y{#3}	
+	\foreach \t [count=\@j from 0] in {#4} {
+		\node (rect) at (\x, \y) [/myrow/box, minimum width = \@myrowWidth cm, minimum height = \@myrowHeight cm] (\@myrowName \@j) {};s
+		\node[/myrow/text] at (\x, \y) {\t};
+	}
+	\end{scope}
+	\endgroup
+}
+
+\newcommand{\emptyrow}[4][]{%%%
+	\begingroup
+	\begin{scope}
+		\pgfkeys{/myrow, #1}
+		\edef\x{#2 + \noexpand\the\noexpand\@j * \@myrowWidth + \noexpand\the\noexpand\@j * \@myrowSpace}
+		\edef\y{#3}	
+		\edef\num{#4}
+		\newcount\@j
+		\@j 0\relax
+		\loop
+		\node (rect) at (\x,\y) [/myrow/box, minimum width = \@myrowWidth cm, minimum height = \@myrowHeight cm] (\@myrowName \the\@j) {};
+		\advance \@j by1
+		\ifnum\@j<\num \repeat
+	\end{scope}
+	\endgroup
+}
+
+% % % % % % % % % % % % % % % % % % % % % % % %
+% Кастомные цветные блоки
+% % % % % % % % % % % % % % % % % % % % % % % %
+\if@blocks
+\RequirePackage{tcolorbox}
+\definecolor{myblue}{rgb}{0.15,0.15,0.53}
+\pgfkeys{
+	/myblock/.cd,
+	color/.initial=myblue,
+	back color/.initial=blue!3,
+	text color/.initial=white
+}
+
+\tcbuselibrary{skins}
+\newtcbox{\titlebox}{
+	enhanced,
+	overlay={
+		\draw[\pgfkeysvalueof{/myblock/color},fill=\pgfkeysvalueof{/myblock/color}](frame.south east)--+(0,.2)to[bend right]+(.2,-0)--cycle;},
+	sharp corners = all,
+	rounded corners = northeast,
+	colback=\pgfkeysvalueof{/myblock/color},
+	top=-1pt,bottom=-2pt,left=2pt,right=2pt,
+	boxrule=1pt,
+	colframe=\pgfkeysvalueof{/myblock/color},
+	sharp corners=south,
+	colupper=\pgfkeysvalueof{/myblock/text color},
+	fontupper=\bfseries
+}
+
+\newtcolorbox{myblock}[1][]{
+	enhanced,
+	sharp corners = all,
+	left=2pt,
+	right=2pt,
+	bottom=2pt,
+	colframe=\pgfkeysvalueof{/myblock/color},
+	enlarge top by=\baselineskip,
+	halign=left,
+	boxrule=1pt,
+	colback=\pgfkeysvalueof{/myblock/back color},
+	overlay={
+		\def\myblock@tempa{#1}
+		\ifx\myblock@tempa\@empty
+		\else
+		%\draw[myblue,fill=myblue]($(frame.north west)+(.2pt,-.2pt)$)--+(.1,0)to[bend right]+(-0,-.1)--cycle;
+		\node [
+		anchor=south west,
+		inner sep=0pt,
+		outer sep=0pt
+		]at(frame.north west){\titlebox{#1}};
+		\fi
+	},
+}
+\fi
+
+% % % % % % % % % % % % % % % % % % % % % % % %
+% Определяем компактные списки.
+% % % % % % % % % % % % % % % % % % % % % % % %
+\@ifclassloaded{beamer}
+{}
+{%
+\RequirePackage{enumitem}
+% Список с точками
+\newenvironment{compactitemize}{
+	\begin{itemize}[itemsep=0pt, topsep=0pt, partopsep=0pt, parsep=0pt]
+	}{
+\end{itemize}
+}
+% Список с цифрами
+\newenvironment{compactenumerate}
+{\begin{enumerate}[itemsep=0pt, topsep=0pt, partopsep=0pt, parsep=0pt]}
+{\end{enumerate}}
+}
+
+% % % % % % % % % % % % % % % % % % % % % % % %
+% Гиперактивные ссылки в документе
+% % % % % % % % % % % % % % % % % % % % % % % %
+\if@hyperref
+\RequirePackage{url}
+\RequirePackage{hyperref}
+\AtBeginDocument{
+	\label{CorrectFirstPageLabel}
+	\def\fpage{\pageref{CorrectFirstPageLabel}}
+}
+\hypersetup{
+	linkcolor  = blue!85!black,
+	citecolor  = orange!85!black,
+	urlcolor   = violet!85!black,
+	colorlinks = true,
+}
+\fi
+
+% % % % % % % % % % % % % % % % % % % % % % % %
+% Папка с картинками
+% % % % % % % % % % % % % % % % % % % % % % % %
+\graphicspath{{./images/}}
+
+% % % % % % % % % % % % % % % % % % % % % % % %
+% Масштабирование картинок
+% % % % % % % % % % % % % % % % % % % % % % % %
+\RequirePackage{adjustbox}
+
+% % % % % % % % % % % % % % % % % % % % % % % %
+% Даты
+% % % % % % % % % % % % % % % % % % % % % % % %
+\usepackage[useregional]{datetime2}
+
+% % % % % % % % % % % % % % % % % % % % % % % %
+% Выделения в тексте
+% % % % % % % % % % % % % % % % % % % % % % % %
+\newcommand\define[1]{\textit{#1}\/}
+\newcommand\code[1]{\texttt{#1}}
+\newcommand\name[1]{\textsl{#1}\/}
+
+% % % % % % % % % % % % % % % % % % % % % % % %
+% Текстовые модули
+% % % % % % % % % % % % % % % % % % % % % % % %
+\RequirePackage{ragged2e}
+\newenvironment{module}[1]
+{\vspace{0.3em}\noindent\textbf{\vbox{\RaggedRight #1}}\par}
+{}
+
+% % % % % % % % % % % % % % % % % % % % % % % %
+% Красивые таблицы
+% % % % % % % % % % % % % % % % % % % % % % % %
+\if@tables
+\RequirePackage{booktabs}
+\renewcommand{\arraystretch}{1.2}
+\RequirePackage{array}
+\RequirePackage{multirow}
+\fi
+% % % % % % % % % % % % % % % % % % % % % % % %
+% Листинги кода
+% % % % % % % % % % % % % % % % % % % % % % % %
+\if@listing
+\RequirePackage{listings}
+\lstset{
+	frame=single,
+	basicstyle=\footnotesize,
+	numbers=left,
+	stepnumber=1,
+	showstringspaces=false,
+	xleftmargin=2em,
+	framexleftmargin=1.6em,
+%	framexrightmargin=-0.5em,
+	xrightmargin=0.5em,
+	%	tabsize=1,
+	breaklines=true,
+	breakatwhitespace=false,
+	basicstyle=\ttfamily,
+	keywordstyle=\color{blue}\ttfamily,
+	stringstyle=\color{red}\ttfamily,
+	commentstyle=\color{OliveGreen}\ttfamily,
+	morecomment=[l][\color{magenta}]{\#}
+}
+\renewcommand{\lstlistingname}{Листинг}
+\fi
+
+% % % % % % % % % % % % % % % % % % % % % % % %
+% Библиография
+% % % % % % % % % % % % % % % % % % % % % % % %
+\if@biblio
+\@ifclassloaded{beamer}%
+ {
+ 	\RequirePackage[style=numeric,maxnames=2]{biblatex}
+ 	\setbeamertemplate{bibliography item}[text]
+ 	
+ 	\DeclareBibliographyDriver{std}{%
+ 		\usebibmacro{bibindex}%
+ 		\usebibmacro{begentry}%
+ 		\usebibmacro{author/editor+others/translator+others}%
+ 		\setunit{\labelnamepunct}\newblock
+ 		\usebibmacro{title}%
+ 		\newunit\newblock
+ 		\usebibmacro{date}%
+ 		\newunit\newblock
+ 		\usebibmacro{finentry}}
+ 	
+ 	\DeclareBibliographyAlias{article}{std}
+ 	\DeclareBibliographyAlias{book}{std}
+ 	\DeclareBibliographyAlias{booklet}{std}
+ 	\DeclareBibliographyAlias{collection}{std}
+ 	\DeclareBibliographyAlias{inbook}{std}
+ 	\DeclareBibliographyAlias{incollection}{std}
+ 	\DeclareBibliographyAlias{inproceedings}{std}
+ 	\DeclareBibliographyAlias{manual}{std}
+ 	\DeclareBibliographyAlias{misc}{std}
+ 	\DeclareBibliographyAlias{online}{std}
+ 	\DeclareBibliographyAlias{patent}{std}
+ 	\DeclareBibliographyAlias{periodical}{std}
+ 	\DeclareBibliographyAlias{proceedings}{std}
+ 	\DeclareBibliographyAlias{report}{std}
+ 	\DeclareBibliographyAlias{thesis}{std}
+ 	\DeclareBibliographyAlias{unpublished}{std}
+ 	\DeclareBibliographyAlias{*}{std}
+} 
+{}
+\fi
+
+\endinput
