@@ -197,7 +197,8 @@
     \item Смешанная схема.
   \end{enumerate}
   \item Индексирование для XPath;
-  \item Выполнение XPath запросов на примере алгоритмов PathStack и TwigStack.
+  \item Выполнение XPath запросов на примере алгоритмов PathStack и TwigStack;
+  \item Итог: настоящее XML и будущее древовидных моделей данных.
 \end{itemize}
 \end{frame}
 
@@ -495,7 +496,7 @@ Pathfinder: чисто реляционное выполнение XQuery
   \setlength\itemsep{1em}
   \item Идея: существующие реляционные системы могут эффективно исполнять XQuery;
   \item В основе XQuery лежит понятие секвенции~--- последовательность состоящая из значений и деревьев. Для кодирования секвенций:
-  \item Модель XDM (XQuery Data Model)~--- каждый узел это запись в таблице, возможно, с ``хитрой'' системой кодирований (pre/post region \footnote{http://db.in.tum.de/~grust/files/xquery-on-sql-hosts.pdf материалы школы EDBT}, ORDPATH) \cite{Grust2009};
+  \item Модель XDM (XQuery Data Model)~--- каждый узел это запись в таблице, возможно, с ``хитрой'' системой кодирований (pre/post region\footnote{\url{http://db.in.tum.de/~grust/files/xquery-on-sql-hosts.pdf} материалы школы EDBT}, ORDPATH) \cite{Grust2009};
   \item Вычисление запроса: результаты FOR (для каждой переменной) выкладываем в таблицу, ``разворачивая'' их;
   \item Далее, на эту таблицу надстраиваем операторы специальной алгебры (Flat Relational Algebra).
 \end{itemize}
@@ -527,7 +528,7 @@ Pathfinder: чисто реляционное выполнение XQuery
 \frametitle{Pathfinder (выполнение FLOWR): пример II}
 
 \begin{figure}[htb]
-\includegraphics[width=\textwidth,height=0.66\textheight,keepaspectratio]{pathfinder2.png} 
+\includegraphics[width=\textwidth,height=0.63\textheight,keepaspectratio]{pathfinder2.png} 
 \footnote{\tiny{Изображение взято из \url{http://db.in.tum.de/~grust/files/xquery-on-sql-hosts.pdf}}}
 \end{figure}    
 
@@ -605,7 +606,7 @@ Pathfinder: чисто реляционное выполнение XQuery
 		\begin{itemize}
 			\item 100\% поддержка XQuery,
 			\item транзакции,
-			\item внедрения.
+			\item внедрения (Большая Российская Энциклопедия, для нее вкрутили полнотекстовый поиск).
 		\end{itemize}
 		\item На мой взгляд это самый большой контрибьшен в исследовательское сообщество по базам данных, за всю историю страны.
 		\item Их пытался купить Оракл (!).
@@ -629,7 +630,7 @@ Pathfinder: чисто реляционное выполнение XQuery
 
 \begin{itemize}
   \setlength\itemsep{1em}
-  \item Схемы нумерации:
+  \item Индексирование вершин (схемы нумерации вершин):
   \begin{itemize}
     \item ID~--- в лоб: подобие инвертированного индекса, но это дорого :(
     \item Dewey~--- аналог библиотечной классификации, проверка подстроки (делаем trie), плоха если дерево глубокое;
